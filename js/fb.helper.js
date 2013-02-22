@@ -1,8 +1,8 @@
 var global = this;
 
 // singleton
-var FBHelper = new function() {
-    //if (this === global) { return new FBLogin(); }
+var FBHelper = function(appNamespace) {
+    if (this === global) { return new FBLogin(); }
     var me = this;
 
     me.loggedInUser;
@@ -36,19 +36,23 @@ var FBHelper = new function() {
         });
     };
 
+
     me.getUser = function() {
         return me.loggedInUser;
     };
 
-    me.postIdea = function(ideaUrl, appNamespace, callback) {
+    me.postIdea = function(ideaUrl, callback) {
         callback = callback || function(){};
         FB.api(
             '/me/' + appNamespace + ':add',
             'post',
             { idea: ideaUrl },
-            function(response) {
-                callback(response);
-            });
+            callback
+        );
     };
+
+    me.getFriends = function(callback) {
+        FB.api('/me/friends', callback);
+    }
 }
 

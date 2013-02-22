@@ -2,6 +2,8 @@ window.fbAsyncInit = function() {
     var fbAppId = document.getElementById('fb_app_id').value;
     var fbAppNamespace = document.getElementById('fb_appNamespace').value;
 
+    window.FBHelper = new FBHelper(fbAppNamespace);
+
     FB.init({
         appId      : fbAppId, // App ID
         status     : true, // check login status
@@ -12,9 +14,8 @@ window.fbAsyncInit = function() {
     var submitIdea = function() {
         var idea = document.getElementById('fb_submitted_idea');
         console.log(idea);
-        console.log(fbAppNamespace);
         if (FBHelper.getUser() && idea && idea.value) {
-            FBHelper.postIdea(idea.value, fbAppNamespace, function(response) {
+            FBHelper.postIdea(idea.value, function(response) {
                 console.log(response);
             });
         }
@@ -24,5 +25,21 @@ window.fbAsyncInit = function() {
         console.log(user);
         var welcome = document.getElementById('welcome-msg');
         welcome.innerHTML = "Welcome to our app, " + user.name;
+
+        FBHelper.getFriends(function(res) {
+            console.log("getFriends", res);
+            var friends = res.data;
+            for (var i = 0; i < friends.length; i++) {
+                document.write(friends[i].name + "<br>");
+            }
+        });
+        FBHelper.getFriends(function(res) {
+
+            var friends = res.data;
+            var list = $("body").append('<ul></ul>').find('ul');
+            for (var i = 0; i < friends.length; i++) {
+                list.append("<li>" + friends[i].name + "</li>");
+            }
+        });
     });
 };
