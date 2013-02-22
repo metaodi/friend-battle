@@ -32,18 +32,33 @@ window.fbAsyncInit = function() {
         $('#navigation').removeClass('hidden');
 
         FBHelper.processInvites();
-        FBHelper.getFriends(function(res) {
-            console.log("getFriends", res);
-            var friends = res.data;
-            for (var i = 0; i < friends.length; i++) {
-                document.write(friends[i].name + "<br>");
-            }
-        });
         FBHelper.getFriends(function(friends) {
-            var list = $("#content").append('<ul></ul>').find('ul');
+            var activityList;
+            var friendList = $("#content").append('<ul></ul>').find('ul');
             for (var i = 0; i < friends.length; i++) {
-                list.append("<li>" + friends[i].name + ' (' + friends[i].id + ')' + "</li>");
+                friendList.append("<li>" + friends[i].name);
+                activityList = friendList.append("<ul id='activities-" + friends[i].id + "'></ul>").find("#activities-" + friends[i].id);
+                friendList.append("</li>");
+                printActivities(friends[i].id);
             }
         });
     });
+
+    var printActivities = function(friendId) {
+        FBHelper.getLastWeeksActivitiesOfFriend(friendId, function(activities) {
+            if(activities.error_msg) {
+                console.error(activities.error_msg);
+            }
+
+            for (var j = 0; j < activities.length; j++) {
+                FBHelper.getById(activities[j].post_id, function(post) {
+                    activityList = $("#activities-" + friendId)
+                    var message = post.message || (post.story + '<br/>' + post.link);
+                    activityList.append("<li>" + message  + "</li>");
+                    console.log("post", post);
+                });
+
+            }
+        });
+    }
 };
