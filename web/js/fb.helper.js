@@ -51,8 +51,14 @@ var FBHelper = function(appNamespace) {
         );
     };
 
-    me.getFriends = function(callback) {
+    me.getRawFriends = function(callback) {
         FB.api('/me/friends', callback);
+    }
+
+    me.getFriends = function(callback) {
+       me.getRawFriends(function(response) {
+           callback(response.data);
+       })
     }
 }
 
