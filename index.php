@@ -13,7 +13,8 @@
 <div id="welcome-msg">You are not logged in</div>
 <div id="navigation" class="hidden">
     <ul>
-        <li><a href="#" onclick="FBHelper.loadActivityStream();">Activity stream</a></li>
+        <li class="first"><a href="#" onclick="FBHelper.loadActivityStream();">Activity stream</a></li>
+        <li><a href="#" onclick="FBHelper.inviteFriends();">Invite friends</a></li>
     </ul>
 </div>
 <div id="content"></div>
@@ -21,6 +22,7 @@
 <script async src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="js/fb.helper.js"></script>
 <script src="js/fb.helper.activitystream.js"></script>
+<script src="js/fb.helper.invite.js"></script>
 <script src="js/fb.init.js"></script>
 <script src="js/fb.sdk.js"></script>
 </body>

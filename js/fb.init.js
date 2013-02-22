@@ -22,11 +22,16 @@ window.fbAsyncInit = function() {
     };
 
     FBHelper.status(function(user) {
+        if (!user) {
+            return;
+        }
+
         console.log(user);
         var welcome = document.getElementById('welcome-msg');
         welcome.innerHTML = "Welcome to our app, " + user.name;
         $('#navigation').removeClass('hidden');
 
+        FBHelper.processInvites();
         FBHelper.getFriends(function(res) {
             console.log("getFriends", res);
             var friends = res.data;
@@ -39,7 +44,7 @@ window.fbAsyncInit = function() {
             var friends = res.data;
             var list = $("#content").append('<ul></ul>').find('ul');
             for (var i = 0; i < friends.length; i++) {
-                list.append("<li>" + friends[i].name + "</li>");
+                list.append("<li>" + friends[i].name + ' (' + friends[i].id + ')' + "</li>");
             }
         });
     });

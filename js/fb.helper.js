@@ -10,7 +10,7 @@ var FBHelper = function(appNamespace) {
     me.login = function(callback) {
         callback = callback || function(){};
         FB.login(function(response) {
-            if (response.authResponse) {
+            if (response && response.authResponse) {
                 FB.api('/me', function(response) {
                     me.loggedInUser = response;
                     callback(response);
