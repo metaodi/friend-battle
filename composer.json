@@ -1,5 +1,23 @@
 {
+    "name" : "Friend battle",
+    "type" : "Webservice",
+    "description" : "...",
+    "keywords" : [],
+    "homepage" : "https://github.com/odi86/friend-battle",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name" : "x",
+            "email" : "x"
+        },
+        {
+            "name" : "Christoph Ebert",
+            "email" : "christoph.ebert@liip.ch"
+        }
+    ],
     "require": {
-        "silex/silex": "1.0.*@dev"
+        "php": ">=5.3.3",
+        "silex/silex": "1.0.*@dev",
+        "doctrine/dbal": "2.3.*"
     }
 }
