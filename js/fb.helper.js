@@ -19,7 +19,7 @@ var FBHelper = function(appNamespace) {
                 me.loggedInUser = null;
                 callback(null);
             }
-        }, {scope: 'publish_actions' } );
+        }, {scope: 'publish_actions,read_stream,friends_activities' } );
     };
 
     me.status = function(callback) {
