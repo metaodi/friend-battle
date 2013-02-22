@@ -25,6 +25,7 @@ window.fbAsyncInit = function() {
         console.log(user);
         var welcome = document.getElementById('welcome-msg');
         welcome.innerHTML = "Welcome to our app, " + user.name;
+        $('#navigation').removeClass('hidden');
 
         FBHelper.getFriends(function(res) {
             console.log("getFriends", res);
@@ -36,7 +37,7 @@ window.fbAsyncInit = function() {
         FBHelper.getFriends(function(res) {
 
             var friends = res.data;
-            var list = $("body").append('<ul></ul>').find('ul');
+            var list = $("#content").append('<ul></ul>').find('ul');
             for (var i = 0; i < friends.length; i++) {
                 list.append("<li>" + friends[i].name + "</li>");
             }
