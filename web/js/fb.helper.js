@@ -60,5 +60,9 @@ var FBHelper = function(appNamespace) {
            callback(response.data);
        })
     }
+
+    me.getLatestActivitiesOfFriend = function(friendId) {
+        FB.api('/me/activities', callback);
+    }
 }
 

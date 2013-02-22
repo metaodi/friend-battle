@@ -39,9 +39,7 @@ window.fbAsyncInit = function() {
                 document.write(friends[i].name + "<br>");
             }
         });
-        FBHelper.getFriends(function(res) {
-
-            var friends = res.data;
+        FBHelper.getFriends(function(friends) {
             var list = $("#content").append('<ul></ul>').find('ul');
             for (var i = 0; i < friends.length; i++) {
                 list.append("<li>" + friends[i].name + ' (' + friends[i].id + ')' + "</li>");
