@@ -46,19 +46,9 @@ window.fbAsyncInit = function() {
 
     var printActivities = function(friendId) {
         FBHelper.getLastWeeksActivitiesOfFriend(friendId, function(activities) {
-            if(activities.error_msg) {
-                console.error(activities.error_msg);
-            }
-
-            for (var j = 0; j < activities.length; j++) {
-                FBHelper.getById(activities[j].post_id, function(post) {
-                    activityList = $("#activities-" + friendId)
-                    var message = post.message || (post.story + '<br/>' + post.link);
-                    activityList.append("<li>" + message  + "</li>");
-                    console.log("post", post);
-                });
-
-            }
+            activityList = $("#activities-" + friendId)
+            var message = activities.message || (activities.story + '<br/>' + activities.link);
+            activityList.append("<li>" + message  + "</li>");
         });
     }
 };

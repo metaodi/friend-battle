@@ -81,7 +81,15 @@ var FBHelper = function(appNamespace) {
                     " and created_time < "  + oneWeekAgo +
                     " and created_time > "  + twoWeeksAgo +
                     "LIMIT 10";
-        me.runFqlQuery(query, callback);
+        me.runFqlQuery(query, function(queryResult) {
+            if(queryResult.error_msg) {
+                console.error(queryResult.error_msg);
+                return;
+            }
+            for (var i = 0; i < queryResult.length; i++) {
+                me.getById(queryResult[i].post_id, callback);
+            }
+        });
     }
 
     var convertToUnixTimeStamp = function(dateObj) {
