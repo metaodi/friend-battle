@@ -31,7 +31,7 @@ var FBHelper = new function() {
                     callback(response);
                 });
             } else {
-                me.login();
+                me.login(callback);
             }
         });
     };

@@ -20,8 +20,9 @@ window.fbAsyncInit = function() {
         }
     };
 
-
     FBHelper.status(function(user) {
-        submitIdea();
+        console.log(user);
+        var welcome = document.getElementById('welcome-msg');
+        welcome.innerHTML = "Welcome to our app, " + user.name;
     });
 };
