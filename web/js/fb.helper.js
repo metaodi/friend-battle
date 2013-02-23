@@ -11,7 +11,9 @@ var FBHelper = function(appNamespace) {
         callback = callback || function(){};
         FB.login(function(response) {
             if (response && response.authResponse) {
-                FB.api('/me', function(response) {
+                var token = response.authResponse['accessToken'];
+                //FB.api('/me', function(response) {
+                $.getJSON('/api/login/' + token, function(response) {
                     me.loggedInUser = response;
                     callback(response);
                 });

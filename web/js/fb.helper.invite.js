@@ -13,6 +13,7 @@ window.FBHelper.prototype.inviteFriends = function() {
         if (response) {
             // if the response was truthy the user sent an invitation
             // but we don't care so far...
+            console.log('request', response);
         }
     });
 };
@@ -34,6 +35,8 @@ window.FBHelper.prototype.processInvites = function() {
     var requestType = urlParams["app_request_type"];
     if (requestType == "user_to_user") {
         var requestID = urlParams["request_ids"];
+        // TODO: sometimes there are multiple request ids.. why?
+        // if the user invites you multiple times you get all of them
         FB.api(requestID, FBHelper.acceptInvite);
     }
     return startedGame;
@@ -43,5 +46,11 @@ window.FBHelper.prototype.acceptInvite = function(response) {
     var inviteID = response.from.id,
         inviteName = response.from.name.split(" ")[0];
 
+    // TODO: how to ensure this is not miss-used?
+    // SILENT INVITE? SERVERSIDE?
+    // how can we send a secure request that cannot be faked?
+    $.getJSON('/invite.json', [], function(data, textStatus, jqXHR) {
+        console.log('invite callback', data);
+    });
     $('#welcome-msg').text('Invitation from ' + inviteName + ' accepted!');
 };

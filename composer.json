@@ -19,6 +19,7 @@
         "php": ">=5.3.3",
         "silex/silex": "1.0.*@dev",
         "doctrine/dbal": "2.3.*",
+        "facebook/php-sdk": "dev-master",
         "twig/twig": "1.*"
     }
 }

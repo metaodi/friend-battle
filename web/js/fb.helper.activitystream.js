@@ -3,13 +3,8 @@ window.FBHelper.prototype.loadActivityStream = function() {
     var container = $('#content').html('<ul></ul>').children('ul');
     container.append('<li>Fetching data...</li>');
 
-    FB.api('/me/home', function(response) {
-        // TODO: response.error handling..
-        if (response.error) {
-            FBHelper.login(FBHelper.loadActivityStream);
-            return;
-        }
-
+    $.getJSON('/api/activitystream', function(response) {
+    //FB.api('/me/home', function(response) {
         container.html('');
         var i, content, message;
         for(i=0; i<response.data.length; i++) {
