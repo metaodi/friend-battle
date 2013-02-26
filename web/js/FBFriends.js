@@ -15,17 +15,20 @@ var FBFriends = function() {
     }
 
     me.getRandomFriends = function(friendCount, callback) {
-        me.getRawFriends(function(response) {
-            var randomFriends = [],
-                allFriends = response.data,
-                i,randomIndex;
-            for (i = 0; i < friendCount; i++) {
-                randomIndex = getRandomInt(0,allFriends.length-1);
-                randomFriends[i] = allFriends[randomIndex];
-                allFriends.splice(randomIndex, 1);
+        var query = "SELECT uid2 FROM friend WHERE uid1=me() order by rand() limit " + friendCount;
+
+        FBApi.runFqlQuery(query, function(queryResult) {
+            if(queryResult.error_msg) {
+                console.error(queryResult.error_msg);
+                return;
             }
-            callback(randomFriends);
-        })
+
+            for (var i = 0; i < queryResult.length; i++) {
+                FBApi.getById(queryResult[i].uid2, function(friend) {
+                    callback(friend);
+                });
+            }
+        });
     }
 
     var getRandomInt = function(min, max) {

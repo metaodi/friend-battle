@@ -13,25 +13,25 @@ var FBActivities = function() {
             var i, content, message;
             for(i=0; i<response.data.length; i++) {
                 content = response.data[i];
-                //console.log(content);
                 message = content.message || (content.story + '<br/>' + content.link);
                 container.append('<li><b>' + content.from.name + ':</b><br/>' + message + '</li>')
             }
         });
     }
 
-    me.getLastWeeksActivitiesOfFriend = function(friendId, callback) {
+    me.getRandomActivity = function(callback) {
         var oneWeekAgo  = FBApi.convertToUnixTimeStamp(new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000));
-        var twoWeeksAgo = FBApi.convertToUnixTimeStamp(new Date(new Date().getTime() - 14 * 24 * 60 * 60 * 1000));
-        var query = "select post_id, actor_id, target_id, message " +
-            "from stream " +
-            "where source_id = " + friendId +
+        var query = "select post_id, message " +
+            "from stream where message and " +
+            " filter_key in (SELECT filter_key FROM stream_filter WHERE uid=me() AND type='newsfeed') " +
+            " and is_hidden = 0 " +
             " and created_time < "  + oneWeekAgo +
-            " and created_time > "  + twoWeeksAgo +
-            "LIMIT 10";
+            " order by rand()" +
+            " limit 1";
+        console.log(query);
         FBApi.runFqlQuery(query, function(queryResult) {
-            if(queryResult.error_msg) {
-                console.error(queryResult.error_msg);
+            if(!queryResult || queryResult.length === 0 || queryResult.error_msg) {
+                console.error("Something went wrong with the query", queryResult);
                 return;
             }
             for (var i = 0; i < queryResult.length; i++) {
@@ -42,16 +42,11 @@ var FBActivities = function() {
 
     me.getLastWeeksActivities = function(contentDiv) {
         var friendList = contentDiv.html('<ul></ul>').children('ul');
-        friendList.append('<li>Fetching data...</li>');
-        FBFriends.getRandomFriends(5,function(friends) {
-            friendList.html('');
-            var activityList;
-            for (var i = 0; i < friends.length; i++) {
-                friendList.append("<li>" + friends[i].name);
-                activityList = friendList.append("<ul id='activities-" + friends[i].id + "'></ul>").find("#activities-" + friends[i].id);
-                friendList.append("</li>");
-                printFriendActivities(friends[i].id);
-            }
+        FBFriends.getRandomFriends(5,function(friend) {
+            friendList.append("<li>" + friend.name);
+            var activityList = friendList.append("<ul id='activities-" + friend.id + "'></ul>").find("#activities-" + friend.id);
+            friendList.append("</li>");
+            printFriendActivities(friend.id);
         });
     }
 
@@ -70,11 +65,39 @@ var FBActivities = function() {
 
     var printFriendActivities = function(friendId) {
         var activityList = $("#activities-" + friendId);
-        activityList.append('<li>Fetching data...</li>');
-        me.getLastWeeksActivitiesOfFriend(friendId, function(activities) {
-            activityList.html('');
-            var message = activities.message || (activities.story + '<br/>' + activities.link);
-            activityList.append("<li>" + message  + "</li>");
+        me.getLastWeeksActivitiesOfFriend(friendId, function(activity) {
+            printActivity(activity, activityList);
+        });
+    }
+
+    me.printActivity = function(activity, container) {
+        message = activity.message || (activity.story + '<br/>' + activity.link);
+        container.append('<li>');
+        container.append('<b>' + activity.from.name + ':</b><br/>' + message);
+        if (activity.picture) {
+            container.append("<br/><img src='" + activity.picture + "' />");
+        }
+        container.append('</li>');
+        console.log("printed activity", activity);
+    }
+
+    me.getLastWeeksActivitiesOfFriend = function(friendId, callback) {
+        var oneWeekAgo  = FBApi.convertToUnixTimeStamp(new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000));
+        var twoWeeksAgo = FBApi.convertToUnixTimeStamp(new Date(new Date().getTime() - 14 * 24 * 60 * 60 * 1000));
+        var query = "select post_id, actor_id, target_id, message " +
+                    "from stream " +
+                    "where message and source_id = " + friendId +
+                    " and created_time < "  + oneWeekAgo +
+                    " and created_time > "  + twoWeeksAgo +
+                    "LIMIT 10";
+        FBApi.runFqlQuery(query, function(queryResult) {
+            if(queryResult.error_msg) {
+                console.error(queryResult.error_msg);
+                return;
+            }
+            for (var i = 0; i < queryResult.length; i++) {
+                FBApi.getById(queryResult[i].post_id, callback);
+            }
         });
     }
 }
