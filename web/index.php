@@ -39,16 +39,19 @@ $app->match('/api/leaderboard', function() use ($app) {
 });
 
 $app->match('/api/request/{ids}', function($ids) use ($app) {
+    // check for already invited people
     $user = $app['fb']->getUser();
-    $sql = 'SELECT inviting_user_id FROM invites
-            WHERE invited_user_id = :id';
-
-    // reward all users that send you an invite
+    $sql = 'SELECT inviting_user_id FROM invites WHERE invited_user_id = :id';
     $invites = $app['db']->executeQuery($sql, array('id' => $app->escape($user)))->fetchAll(PDO::FETCH_COLUMN);
     $newInvites = array();
-    foreach (explode(',', $ids) as $id) {
-        $request = $app['fb']->api($id);
-        $id = $request['from']['id'];
+
+    // do a batch request to check to whom the invite(s) belong to
+    $queries = array_map(function($item) {
+        return array('method' => 'GET', 'relative_url' => $item);
+    }, explode(',', $ids));
+    $batchResponse = $app['fb']->api('?batch='.json_encode($queries), 'POST');
+    foreach ($batchResponse as $response) {
+        $id = json_decode($response['body'])->from->id;
         if (!in_array($id, $invites) && !in_array($id, $newInvites)) {
             $newInvites[] = $id;
             $app['db']->insert('invites', array(
@@ -58,11 +61,13 @@ $app->match('/api/request/{ids}', function($ids) use ($app) {
         }
     }
 
+    // and reward all users that have sent you an invite
     if (count($newInvites)) {
         $newInvites[] = $user;
         $sql = 'UPDATE user SET coins = coins + 15 WHERE id IN (' . join(', ', $newInvites) . ')';
         $app['db']->executeQuery($sql);
     }
+
     $message = count($newInvites) ?
         'You and ' . join(' and ', $newInvites) . ' got 15 credits for joining the game!' :
         'You already accepted an invitation';
