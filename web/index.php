@@ -26,14 +26,32 @@ $app->match('/api/activitystream', function() use ($app) {
 });
 
 $app->match('/api/request/{ids}', function($ids) use ($app) {
-    $ids = explode(',', $ids);
-    $message = '';
-    foreach ($ids as $id) {
+    $user = $app['fb']->getUser();
+    $sql = 'SELECT inviting_user_id FROM invites
+            WHERE invited_user_id = :id';
+
+    // reward all users that send you an invite
+    $invites = $app['db']->executeQuery($sql, array('id' => $app->escape($user)))->fetchAll(PDO::FETCH_COLUMN);
+    $newInvites = array();
+    foreach (explode(',', $ids) as $id) {
         $request = $app['fb']->api($id);
-        $message .= ($id . ': ' . $request['from']['name'] . ', ');
+        $id = $request['from']['id'];
+        if (!in_array($id, $invites) && !in_array($id, $newInvites)) {
+            $newInvites[] = $id;
+            $app['db']->insert('invites', array(
+                'inviting_user_id' => $id,
+                'invited_user_id' => $user
+            ));
+        }
     }
+
+    $message = count($newInvites) ?
+        'You and the following user(s) got credits: ' . join(', ', $newInvites) :
+        'You already accepted an invitation';
+
     return $app->json(array(
-        'message' => 'incomming requests:' . $message
+        'message' => $message,
+        'acceptedInvites' => $newInvites
     ));
 });
 
