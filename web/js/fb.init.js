@@ -31,7 +31,6 @@ window.fbAsyncInit = function() {
         welcome.innerHTML = "Welcome to our app, " + user.name;
         $('#navigation').removeClass('hidden');
 
-        FBHelper.processInvites();
         FBHelper.getFriends(function(friends) {
             var activityList;
             var friendList = $("#content").append('<ul></ul>').find('ul');
