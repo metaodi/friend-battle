@@ -19,4 +19,8 @@ var FBApi = function() {
     me.convertToUnixTimeStamp = function(dateObj) {
         return Math.round(dateObj.getTime() / 1000);
     }
+
+    me.printer = function(obj) {
+        console.log(obj);
+    }
 }

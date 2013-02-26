@@ -4,8 +4,9 @@ window.fbAsyncInit = function() {
 
     window.FBActivities = new FBActivities();
     window.FBApi = new FBApi();
+    window.FBFriendBattle = new FBFriendBattle(fbAppNamespace);
     window.FBFriends = new FBFriends();
-    window.FBLogin = new FBLogin(fbAppNamespace);
+    window.FBLogin = new FBLogin();
 
     FB.init({
         appId      : fbAppId, // App ID

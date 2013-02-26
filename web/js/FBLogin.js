@@ -1,8 +1,8 @@
 var global = this;
 
 // singleton
-var FBLogin = function(appNamespace) {
-    if (this === global) { return new FBLogin(appNamespace); }
+var FBLogin = function() {
+    if (this === global) { return new FBLogin(); }
     var me = this, processResponse;
 
     me.loggedInUser;
