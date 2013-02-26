@@ -25,9 +25,15 @@ $app->match('/api/activitystream', function() use ($app) {
     return $app->json($me);
 });
 
-$app->match('/invite.json', function() use ($app) {
+$app->match('/api/request/{ids}', function($ids) use ($app) {
+    $ids = explode(',', $ids);
+    $message = '';
+    foreach ($ids as $id) {
+        $request = $app['fb']->api($id);
+        $message .= ($id . ': ' . $request['from']['name'] . ', ');
+    }
     return $app->json(array(
-        'message' => 'blo'
+        'message' => 'incomming requests:' . $message
     ));
 });
 
