@@ -13,7 +13,6 @@ $app->match('/', function() use ($app) {
     return $app['twig']->render('index.html.twig');
 });
 
-// TODO: proper error handling!
 $app->match('/api/login/{token}', function($token) use ($app) {
     $app['fb']->setAccesstoken($token);
     // add new users to database
@@ -59,8 +58,13 @@ $app->match('/api/request/{ids}', function($ids) use ($app) {
         }
     }
 
+    if (count($newInvites)) {
+        $newInvites[] = $user;
+        $sql = 'UPDATE user SET coins = coins + 15 WHERE id IN (' . join(', ', $newInvites) . ')';
+        $app['db']->executeQuery($sql);
+    }
     $message = count($newInvites) ?
-        'You and the following user(s) got credits: ' . join(', ', $newInvites) :
+        'You and ' . join(' and ', $newInvites) . ' got 15 credits for joining the game!' :
         'You already accepted an invitation';
 
     return $app->json(array(
