@@ -55,6 +55,19 @@ var FBActivities = function() {
         });
     }
 
+    me.getLeaderboard = function() {
+        var container = $('#content').html('<ul></ul>').children('ul');
+        container.append('<li>Fetching data...</li>');
+        $.getJSON('/api/leaderboard', function(response){
+            container.html('');
+            var i, content;
+            for(i=0; i<response.length; i++) {
+                content = response[i];
+                container.append('<li><b>' + content.name + ':</b> has <b>' + content.coins + '</b> coins</li>')
+            }
+        });
+    }
+
     var printFriendActivities = function(friendId) {
         var activityList = $("#activities-" + friendId);
         activityList.append('<li>Fetching data...</li>');

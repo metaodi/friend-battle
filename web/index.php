@@ -16,13 +16,27 @@ $app->match('/', function() use ($app) {
 // TODO: proper error handling!
 $app->match('/api/login/{token}', function($token) use ($app) {
     $app['fb']->setAccesstoken($token);
+    // add new users to database
     $me = $app['fb']->api('/me');
+    $friends = $app['fb']->api('/me/friends');
+    $users = $friends['data'];
+    $users[] = array('id' => $me['id'], 'name' => $me['name']);
+    foreach ($users as $user) {
+        $sql = "INSERT IGNORE INTO user SET id = '" . $app->escape($user['id']) . "', name = '" . $app->escape($user['name']) . "'";
+        $app['db']->executeQuery($sql);
+    }
     return $app->json($me);
 });
 
 $app->match('/api/activitystream', function() use ($app) {
     $me = $app['fb']->api('/me/home');
     return $app->json($me);
+});
+
+$app->match('/api/leaderboard', function() use ($app) {
+    $sql = 'SELECT name, coins FROM user ORDER BY coins DESC LIMIT 10';
+    $leaderboard = $app['db']->fetchAll($sql);
+    return $app->json($leaderboard);
 });
 
 $app->match('/api/request/{ids}', function($ids) use ($app) {
