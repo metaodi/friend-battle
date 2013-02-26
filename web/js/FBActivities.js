@@ -4,9 +4,8 @@ var FBActivities = function() {
     if (this === global) { return new FBActivities(); }
     var me = this;
 
-    me.loadActivityStream = function() {
-
-        var container = $('#content').html('<ul></ul>').children('ul');
+    me.loadActivityStream = function(contentDiv) {
+        var container = contentDiv.html('<ul></ul>').children('ul');
         container.append('<li>Fetching data...</li>');
 
         $.getJSON('/api/activitystream', function(response) {
@@ -38,6 +37,31 @@ var FBActivities = function() {
             for (var i = 0; i < queryResult.length; i++) {
                 FBApi.getById(queryResult[i].post_id, callback);
             }
+        });
+    }
+
+    me.getLastWeeksActivities = function(contentDiv) {
+        var friendList = contentDiv.html('<ul></ul>').children('ul');
+        friendList.append('<li>Fetching data...</li>');
+        FBFriends.getRandomFriends(5,function(friends) {
+            friendList.html('');
+            var activityList;
+            for (var i = 0; i < friends.length; i++) {
+                friendList.append("<li>" + friends[i].name);
+                activityList = friendList.append("<ul id='activities-" + friends[i].id + "'></ul>").find("#activities-" + friends[i].id);
+                friendList.append("</li>");
+                printFriendActivities(friends[i].id);
+            }
+        });
+    }
+
+    var printFriendActivities = function(friendId) {
+        var activityList = $("#activities-" + friendId);
+        activityList.append('<li>Fetching data...</li>');
+        me.getLastWeeksActivitiesOfFriend(friendId, function(activities) {
+            activityList.html('');
+            var message = activities.message || (activities.story + '<br/>' + activities.link);
+            activityList.append("<li>" + message  + "</li>");
         });
     }
 }

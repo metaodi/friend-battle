@@ -14,6 +14,24 @@ var FBFriends = function() {
         })
     }
 
+    me.getRandomFriends = function(friendCount, callback) {
+        me.getRawFriends(function(response) {
+            var randomFriends = [],
+                allFriends = response.data,
+                i,randomIndex;
+            for (i = 0; i < friendCount; i++) {
+                randomIndex = getRandomInt(0,allFriends.length-1);
+                randomFriends[i] = allFriends[randomIndex];
+                allFriends.splice(randomIndex, 1);
+            }
+            callback(randomFriends);
+        })
+    }
+
+    var getRandomInt = function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     me.inviteFriends = function() {
         FB.ui({method: 'apprequests',
             title: 'Invite friends',

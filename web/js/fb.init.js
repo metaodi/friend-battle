@@ -23,23 +23,7 @@ window.fbAsyncInit = function() {
         welcome.innerHTML = "Welcome to our app, " + user.name;
         $('#navigation').removeClass('hidden');
 
-        FBFriends.getFriends(function(friends) {
-            var activityList;
-            var friendList = $("#content").append('<ul></ul>').find('ul');
-            for (var i = 0; i < friends.length; i++) {
-                friendList.append("<li>" + friends[i].name);
-                activityList = friendList.append("<ul id='activities-" + friends[i].id + "'></ul>").find("#activities-" + friends[i].id);
-                friendList.append("</li>");
-                printActivities(friends[i].id);
-            }
-        });
+        //load activitiy stream at the beginning
+        FBActivities.loadActivityStream($('#content'));
     });
-
-    var printActivities = function(friendId) {
-        FBActivities.getLastWeeksActivitiesOfFriend(friendId, function(activities) {
-            activityList = $("#activities-" + friendId)
-            var message = activities.message || (activities.story + '<br/>' + activities.link);
-            activityList.append("<li>" + message  + "</li>");
-        });
-    }
 };
