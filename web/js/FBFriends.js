@@ -27,4 +27,16 @@ var FBFriends = function() {
             //redirect_uri: 'http://friend-battle.lo/response'
         });
     };
+
+    me.processRequests = function() {
+        var requestIds = decodeURIComponent((new RegExp('[?|&]' + 'request_ids' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)
+            || [,""])[1].replace(/\+/g, '%20'))
+            || null;
+
+        if (requestIds) {
+            $.getJSON('/api/request/' + requestIds, function(response) {
+                alert(response.message);
+            });
+        }
+    }
 }

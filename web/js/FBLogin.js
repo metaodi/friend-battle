@@ -3,20 +3,23 @@ var global = this;
 // singleton
 var FBLogin = function(appNamespace) {
     if (this === global) { return new FBLogin(appNamespace); }
-    var me = this;
+    var me = this, processResponse;
 
     me.loggedInUser;
+    processResponse = function(response, callback) {
+        var token = response.authResponse['accessToken'];
+        $.getJSON('/api/login/' + token, function(response) {
+            me.loggedInUser = response;
+            FBFriends.processRequests();
+            callback(response);
+        });
+    };
 
     me.login = function(callback) {
         callback = callback || function(){};
         FB.login(function(response) {
             if (response && response.authResponse) {
-                var token = response.authResponse['accessToken'];
-                //FB.api('/me', function(response) {
-                $.getJSON('/api/login/' + token, function(response) {
-                    me.loggedInUser = response;
-                    callback(response);
-                });
+                processResponse(response, callback);
             } else {
                 me.loggedInUser = null;
                 callback(null);
@@ -28,10 +31,7 @@ var FBLogin = function(appNamespace) {
         callback = callback || function(){};
         FB.getLoginStatus(function(response) {
             if(response && response.status == 'connected') {
-                FB.api('/me', function(response) {
-                    me.loggedInUser = response;
-                    callback(response);
-                });
+                processResponse(response, callback);
             } else {
                 me.login(callback);
             }
