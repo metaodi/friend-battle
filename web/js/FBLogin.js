@@ -33,7 +33,9 @@ var FBLogin = function() {
             if(response && response.status == 'connected') {
                 processResponse(response, callback);
             } else {
-                me.login(callback);
+                $('#welcome-msg').html('<a href="#">Click here to login</a>').children('a').click(function(){
+                    me.login(callback);
+                });
             }
         });
     };
