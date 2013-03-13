@@ -4,25 +4,33 @@
     <title>Friend Battle</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 </head>
 <body>
-<input type="hidden" id="fb_locale" value="en_US" />
-<input type="hidden" id="fb_app_id" value="540154819351099" />
-<input type="hidden" id="fb_appNamespace" value="liipfriendbattle" />
-<div id="fb-root"></div>
-<div id="welcome-msg">Loading...</div>
-<div id="navigation" class="hidden">
-    <ul>
-        <li class="first"><a href="#" onclick="FBActivities.loadActivityStream($('#content'));">Activity stream</a></li>
-        <li><a href="#" onclick="FBActivities.getLastWeeksActivities($('#content'));">Last weeks activities of random friends</a></li>
-        <li><a href="#" onclick="FBFriendBattle.showBattle($('#content'));">Battle</a></li>
-		<li><a href="#" onclick="FBFriends.inviteFriends();">Invite friends</a></li>
-        <li><a href="#" onclick="FBFriendBattle.fightBattle('http://samples.ogp.me/541910189175562',FBApi.printer);">Post on timeline</a></li>
-        <li><a href="#" onclick="FBActivities.getLeaderboard();">Leaderboard</a></li>
-    </ul>
-</div>
-<div id="content"></div>
+<div class="container">
+    <div class="navbar" id="navigation" class="hidden">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Facebook POC</a>
+            <ul class="nav">
+                <li class="first"><a href="#" onclick="FBActivities.loadActivityStream($('#content'));">Activity stream</a></li>
+                <li><a href="#" onclick="FBActivities.getLastWeeksActivities($('#content'));">Last weeks activities of random friends</a></li>
+                <li><a href="#" onclick="FBFriendBattle.showBattle($('#content'));">Battle</a></li>
+                <li><a href="#" onclick="FBFriends.inviteFriends();">Invite friends</a></li>
+                <li><a href="#" onclick="FBFriendBattle.fightBattle('http://samples.ogp.me/541910189175562',FBApi.printer);">Post on timeline</a></li>
+                <li><a href="#" onclick="FBActivities.getLeaderboard();">Leaderboard</a></li>
+            </ul>
+        </div>
+    </div>
 
+    <input type="hidden" id="fb_locale" value="en_US" />
+    <input type="hidden" id="fb_app_id" value="540154819351099" />
+    <input type="hidden" id="fb_appNamespace" value="liipfriendbattle" />
+    <div id="fb-root"></div>
+    <h4 id="welcome-msg">Loading...</h4>
+    <div id="content"></div>
+</div>
 <script async src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="js/FBActivities.js"></script>
 <script src="js/FBLogin.js"></script>
@@ -31,5 +39,6 @@
 <script src="js/FBFriendBattle.js"></script>
 <script src="js/fb.init.js"></script>
 <script src="js/fb.sdk.js"></script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>

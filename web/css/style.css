@@ -1,22 +1,7 @@
 .hidden {
     display: none !important;
 }
-#navigation {
-    display: inline-block;
-    width: 100%;
-}
-#navigation ul {
-    list-style-type: none;
-}
-#navigation li {
-    float: left;
-    padding-left: 8px;
-    margin-left: 8px;
-    border-left: 1px solid gray;
-}
-#navigation li.first {
-    float: left;
-    padding-left: 0;
-    margin-left: 0;
-    border-left: none;
+
+body {
+    padding-top: 20px;
 }
