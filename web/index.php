@@ -38,6 +38,18 @@ $app->match('/api/leaderboard', function() use ($app) {
     return $app->json($leaderboard);
 });
 
+// currently validation is done in js, this needs to go into the api
+$app->match('/api/correctAnswer', function() use ($app) {
+    //$sql = 'SELECT name, coins FROM user ORDER BY coins DESC LIMIT 10';
+    //$leaderboard = $app['db']->fetchAll($sql);
+    $sql = 'UPDATE user SET coins = coins + 1 WHERE id = ' . $app->escape($app['fb']->getUser());
+    $app['db']->executeQuery($sql);
+
+    return $app->json(array(
+        'status' => 'success'
+    ));
+});
+
 $app->match('/api/request/{ids}', function($ids) use ($app) {
     // check for already invited people
     $user = $app['fb']->getUser();

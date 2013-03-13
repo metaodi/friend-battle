@@ -10,10 +10,10 @@
 </head>
 <body>
 <div class="container">
-    <div class="navbar" id="navigation" class="hidden">
+    <div class="navbar">
         <div class="navbar-inner">
             <a class="brand" href="#">Facebook POC</a>
-            <ul class="nav">
+            <ul class="nav hidden" id="navigation">
                 <li class="first"><a href="#" onclick="FBActivities.loadActivityStream($('#content'));">Activity stream</a></li>
                 <li><a href="#" onclick="FBActivities.getLastWeeksActivities($('#content'));">Last weeks activities of random friends</a></li>
                 <li><a href="#" onclick="FBFriendBattle.showBattle($('#content'));">Battle</a></li>

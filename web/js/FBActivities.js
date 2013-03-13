@@ -25,7 +25,7 @@ var FBActivities = function() {
             "from stream where message and " +
             " filter_key in (SELECT filter_key FROM stream_filter WHERE uid=me() AND type='newsfeed') " +
             " and is_hidden = 0 " +
-            " and created_time < "  + oneWeekAgo +
+            //" and created_time < "  + oneWeekAgo +
             " order by rand()" +
             " limit 1";
         console.log(query);
@@ -71,14 +71,46 @@ var FBActivities = function() {
     }
 
     me.printActivity = function(activity, container) {
+        var message, list, friends = [];
         message = activity.message || (activity.story + '<br/>' + activity.link);
-        container.append('<li>');
-        container.append('<b>' + activity.from.name + ':</b><br/>' + message);
+        container.append('<li></li>');
+        list = container.children('li');
+        list.append(message);
         if (activity.picture) {
-            container.append("<br/><img src='" + activity.picture + "' />");
+            list.append("<br/><img src='" + activity.picture + "' />");
         }
-        container.append('</li>');
+
+        // propose user
+        friends.push({name: activity.from.name, id: activity.from.id});
+        friends.push({name: 'Jake', id: 0});
+        friends.push({name: 'Herbert', id: 0});
+        friends.push({name: 'Phil', id: 0});
+        friends.sort(function() { return 0.5 - Math.random();});
+
+        list.append("<br/><br/>The activity belongs to:<br/>");
+        for (var i=0;i<friends.length;i++) {
+            if (friends[i].name === activity.from.name) {
+                list.append("<a href=\"#\" onclick=\"FBActivities.validateAnswer(1);\">" + friends[i].name + "</a><br/>");
+            } else {
+                list.append("<a href=\"#\" onclick=\"FBActivities.validateAnswer(0);\">" + friends[i].name + "</a><br/>");
+            }
+        }
+
         console.log("printed activity", activity);
+    }
+
+    me.validateAnswer = function(isCorrect) {
+        if (isCorrect) {
+            alert('you got it!');
+            $.getJSON('/api/correctAnswer', function(response) {
+                if (response && response.status === 'success') {
+                    alert('You got 1 Credit, go check the leaderboard!');
+                }
+            });
+        } else {
+            alert('wrong answer!');
+        }
+        FBFriendBattle.showBattle($('#content'));
     }
 
     me.getLastWeeksActivitiesOfFriend = function(friendId, callback) {

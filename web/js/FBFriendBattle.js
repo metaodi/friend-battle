@@ -16,10 +16,10 @@ var FBFriendBattle = function(fbAppNamespace) {
 
     me.showBattle = function(contentDiv) {
         console.log("showBattle");
-        var activityList = contentDiv.html('<ul></ul>').children('ul');
+        contentDiv.html('<ul></ul>').children('ul').append('<li>Fetching data...</li>');
         FBActivities.getRandomActivity(function(activity) {
-            console.log("got random activity", activity)
-            FBActivities.printActivity(activity, activityList);
+            contentDiv.html('<ul></ul>');
+            FBActivities.printActivity(activity, contentDiv.children('ul'));
         });
     }
 
