@@ -33,7 +33,7 @@ var FBLogin = function() {
             if(response && response.status == 'connected') {
                 processResponse(response, callback);
             } else {
-                $('#welcome-msg').html('<a href="#">Click here to login</a>').children('a').click(function(){
+                $('#welcome-msg').html('<a href="#">Click here to login / accept invite</a>').children('a').click(function(){
                     me.login(callback);
                 });
             }
